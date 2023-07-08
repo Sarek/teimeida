@@ -8,7 +8,9 @@ edition = "2021"
 [dependencies]
 axum = { version = "0.6", features = ["headers", "http2", "multipart", "tracing"] }
 log = { version = "0.4", features = ["serde", "std"] }
+nanoid = "0.4"
 serde = { version = "1", features = ["derive"] }
 simple_logger = "4"
 tokio = { version = "1", features = ["full"] }
 tower-http = { version = "0.4", features = ["full"] }
+xattr = "1"

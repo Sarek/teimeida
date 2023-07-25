@@ -12,5 +12,6 @@ nanoid = "0.4"
 serde = { version = "1", features = ["derive"] }
 simple_logger = "4"
 tokio = { version = "1", features = ["full"] }
+tokio-util = { version = "0.7", features = ["io"] }
 tower-http = { version = "0.4", features = ["full"] }
 xattr = "1"

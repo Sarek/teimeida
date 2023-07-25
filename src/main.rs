@@ -9,8 +9,8 @@ use tower_http::services::ServeFile;
 #[macro_use]
 extern crate log;
 
+mod retrieve;
 mod share;
-// mod retrieve;
 
 #[tokio::main]
 async fn main() {
@@ -21,6 +21,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/new", get_service(new_static).post(share::share_handler))
+        .route("/retrieve/:id", get(retrieve::retrieve_handler))
         .route_service("/", index)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024));
 

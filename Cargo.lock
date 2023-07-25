@@ -1001,6 +1001,7 @@ dependencies = [
  "serde",
  "simple_logger",
  "tokio",
+ "tokio-util",
  "tower-http",
  "xattr",
 ]

@@ -1,10 +1,10 @@
 use axum::{
-    routing::get_service,
-    Router,
-    Server, extract::DefaultBodyLimit,
+    extract::DefaultBodyLimit,
+    routing::{get, get_service},
+    Router, Server,
 };
-use tower_http::services::ServeFile;
 use simple_logger::SimpleLogger;
+use tower_http::services::ServeFile;
 
 #[macro_use]
 extern crate log;
@@ -15,7 +15,7 @@ mod share;
 #[tokio::main]
 async fn main() {
     SimpleLogger::new().init().unwrap();
-    
+
     let index = ServeFile::new("assets/index.html");
     let new_static = ServeFile::new("assets/new.html");
 

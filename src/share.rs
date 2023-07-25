@@ -1,6 +1,9 @@
 use axum::{extract::Multipart, response::Html};
 use nanoid::nanoid;
-use std::{fs::{File, self}, io::Write};
+use std::{
+    fs::{self, File},
+    io::Write,
+};
 
 pub async fn share_handler(mut multipart: Multipart) -> Html<String> {
     let id = nanoid!();
@@ -22,7 +25,6 @@ pub async fn share_handler(mut multipart: Multipart) -> Html<String> {
                 } else {
                     return create_error_response("Could not save all uploaded data").await;
                 }
-
             } else {
                 return create_error_response("Could not create storage file").await;
             }
@@ -31,7 +33,11 @@ pub async fn share_handler(mut multipart: Multipart) -> Html<String> {
     create_error_response("No uploaded data found").await
 }
 
-pub async fn create_success_response(filename: &String, size: &String, id: &String) -> Html<String> {
+pub async fn create_success_response(
+    filename: &String,
+    size: &String,
+    id: &String,
+) -> Html<String> {
     if let Ok(template) = fs::read_to_string("assets/upload_done.tpl.html") {
         let final_document = template
             .replace("%filename%", filename)
@@ -42,11 +48,12 @@ pub async fn create_success_response(filename: &String, size: &String, id: &Stri
         // fail
     }
     Html("".to_string())
-
 }
 
 pub async fn create_error_response(msg: &str) -> Html<String> {
-    let mut retval = String::from("<html><head><title>Teimeida Error</title></head><body><h1>Internal Server Error</h1><p>");
+    let mut retval = String::from(
+        "<html><head><title>Teimeida Error</title></head><body><h1>Internal Server Error</h1><p>",
+    );
     retval.push_str(msg);
     retval.push_str("</p></body></html>");
     Html(retval)

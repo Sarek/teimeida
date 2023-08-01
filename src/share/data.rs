@@ -1,12 +1,14 @@
 use bytes::Bytes;
 use nanoid::nanoid;
 use tokio::{fs::File, io::AsyncWriteExt};
+use chrono::{Utc, Days, NaiveDate};
 
 pub struct ShareData {
     data: Bytes,
     orig_name: String,
     storage_path: String,
     id: String,
+    expiration: NaiveDate,
 }
 
 impl ShareData {
@@ -17,7 +19,16 @@ impl ShareData {
             data: Bytes::new(),
             orig_name: String::new(),
             storage_path: "data/".to_owned() + &data_id,
+            expiration: Utc::now().checked_add_days(Days::new(14)).unwrap().date_naive(),
         }
+    }
+
+    pub fn get_expiration(&self) -> &NaiveDate {
+        &self.expiration
+    }
+
+    pub fn set_expiration(&mut self, expiration: NaiveDate) {
+        self.expiration = expiration;
     }
 
     pub fn get_id(&self) -> &String {
@@ -52,12 +63,17 @@ impl ShareData {
         if let Ok(mut file) = File::create(&self.storage_path).await {
             if let Ok(_) = file.write_all(&self.data).await {
                 // save meta-data as extended attributes
-                let _ = xattr::set(
+                let sp_result = xattr::set(
                     &self.storage_path,
                     "user.teimeida.orig_name",
                     &self.orig_name.as_bytes(),
                 );
-                true
+                let exp_result = xattr::set(
+                    &self.storage_path,
+                    "user.teimeida.expiration",
+                    &self.expiration.to_string().as_bytes()
+                );
+                sp_result.is_ok() && exp_result.is_ok()
             } else {
                 false
             }

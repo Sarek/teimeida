@@ -5,8 +5,18 @@
     <body>
         <h1 align="Center">Share a New File</h1>
         <form action="/new" method="post" enctype="multipart/form-data">
-            <input type="file" id="myFile" name="data"><br />
-            <input type="submit">
+            <table>
+                <tr>
+                    <td><label for="file">File to share</label></td><td><input type="file" id="myFile" name="data"></td>
+                </tr>
+                <tr>
+                    <td><label for="expiration">Expiration</label></td><td><input type="date" id="expiration" name="expiration"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Share now"></td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>

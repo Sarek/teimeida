@@ -6,6 +6,7 @@ use axum::{
     response::{IntoResponse, Html},
 };
 use tokio::fs::read_to_string;
+use chrono::NaiveDate;
 
 use self::data::ShareData;
 
@@ -16,6 +17,10 @@ pub async fn share_handler(mut multipart: Multipart) -> impl IntoResponse {
             "data" => {
                 data.set_orig_name(field.file_name().unwrap().to_string());
                 data.set_data(field.bytes().await.unwrap());
+            }
+            "expiration" => {
+                let expiration = field.text().await.unwrap();
+                data.set_expiration(NaiveDate::parse_from_str(expiration.as_str(), "%Y-%m-%d").unwrap());
             }
             _ => {
                 warn!("Found unknown data field");

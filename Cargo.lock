@@ -1086,7 +1086,9 @@ dependencies = [
  "serde",
  "simple_logger",
  "tokio",
+ "tokio-stream",
  "tokio-util",
+ "tokio_schedule",
  "tower-http",
  "xattr",
 ]
@@ -1163,6 +1165,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tokio-stream"
+version = "0.1.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "397c988d37662c7dda6d2208364a706264bf3d6138b11d436cbac0ad38832842"
+dependencies = [
+ "futures-core",
+ "pin-project-lite",
+ "tokio",
+]
+
+[[package]]
 name = "tokio-util"
 version = "0.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1174,6 +1187,16 @@ dependencies = [
  "pin-project-lite",
  "tokio",
  "tracing",
+]
+
+[[package]]
+name = "tokio_schedule"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b4a14ab1658c39d137ebcc5fbaab364c9922a6cc04ab48b364546c2e6022256"
+dependencies = [
+ "chrono",
+ "tokio",
 ]
 
 [[package]]

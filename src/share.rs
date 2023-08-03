@@ -3,10 +3,10 @@ mod data;
 use axum::{
     extract::Multipart,
     http::StatusCode,
-    response::{IntoResponse, Html},
+    response::{Html, IntoResponse},
 };
-use tokio::fs::read_to_string;
 use chrono::NaiveDate;
+use tokio::fs::read_to_string;
 
 use self::data::ShareData;
 
@@ -20,7 +20,9 @@ pub async fn share_handler(mut multipart: Multipart) -> impl IntoResponse {
             }
             "expiration" => {
                 let expiration = field.text().await.unwrap();
-                data.set_expiration(NaiveDate::parse_from_str(expiration.as_str(), "%Y-%m-%d").unwrap());
+                data.set_expiration(
+                    NaiveDate::parse_from_str(expiration.as_str(), "%Y-%m-%d").unwrap(),
+                );
             }
             _ => {
                 warn!("Found unknown data field");

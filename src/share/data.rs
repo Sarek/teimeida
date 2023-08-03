@@ -1,7 +1,7 @@
 use bytes::Bytes;
+use chrono::{Days, NaiveDate, Utc};
 use nanoid::nanoid;
 use tokio::{fs::File, io::AsyncWriteExt};
-use chrono::{Utc, Days, NaiveDate};
 
 pub struct ShareData {
     data: Bytes,
@@ -19,7 +19,10 @@ impl ShareData {
             data: Bytes::new(),
             orig_name: String::new(),
             storage_path: "data/".to_owned() + &data_id,
-            expiration: Utc::now().checked_add_days(Days::new(14)).unwrap().date_naive(),
+            expiration: Utc::now()
+                .checked_add_days(Days::new(14))
+                .unwrap()
+                .date_naive(),
         }
     }
 
@@ -71,7 +74,7 @@ impl ShareData {
                 let exp_result = xattr::set(
                     &self.storage_path,
                     "user.teimeida.expiration",
-                    &self.expiration.to_string().as_bytes()
+                    &self.expiration.to_string().as_bytes(),
                 );
                 sp_result.is_ok() && exp_result.is_ok()
             } else {

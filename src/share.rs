@@ -20,9 +20,8 @@ pub async fn share_handler(mut multipart: Multipart) -> impl IntoResponse {
             }
             "expiration" => {
                 let expiration = field.text().await.unwrap();
-                data.set_expiration(
-                    NaiveDate::parse_from_str(expiration.as_str(), "%Y-%m-%d").unwrap(),
-                );
+                let _ = NaiveDate::parse_from_str(expiration.as_str(), "%Y-%m-%d")
+                .map(|x| data.set_expiration(x));
             }
             _ => {
                 warn!("Found unknown data field");

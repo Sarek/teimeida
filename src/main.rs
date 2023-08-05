@@ -8,6 +8,7 @@ use simple_logger::SimpleLogger;
 use tokio::spawn;
 use tokio_schedule::{every, Job};
 use tower_http::services::ServeFile;
+use tower_http::validate_request::ValidateRequestHeaderLayer;
 
 #[macro_use]
 extern crate log;
@@ -27,10 +28,11 @@ async fn main() {
     let new_static = ServeFile::new("assets/new.html");
 
     let app = Router::new()
-        .route("/new", get_service(new_static).post(share::share_handler))
-        .route("/retrieve/:id", get(retrieve::retrieve_handler))
         .route_service("/", index)
-        .layer(DefaultBodyLimit::max(1024 * 1024 * 1024));
+        .route("/new", get_service(new_static).post(share::share_handler))
+        .layer(DefaultBodyLimit::max(1024 * 1024 * 1024))
+        .route_layer(ValidateRequestHeaderLayer::basic("user", "secret"))
+        .route("/retrieve/:id", get(retrieve::retrieve_handler));
 
     info!("Teimeida starting to serve on port 8080");
     Server::bind(&([0, 0, 0, 0], 8080).into())

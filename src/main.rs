@@ -19,7 +19,7 @@ mod share;
 
 #[tokio::main]
 async fn main() {
-    SimpleLogger::new().init().unwrap();
+    SimpleLogger::new().with_colors(true).with_level(log::LevelFilter::Debug).env().with_utc_timestamps().init().unwrap();
 
     let cleaner = every(1).day().at(0, 0, 0).perform(cleanup);
     spawn(cleaner);

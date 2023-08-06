@@ -10,8 +10,10 @@ FROM scratch
 
 COPY --from=builder /src/target/release/teimeida /
 COPY --from=builder /src/assets /assets
+COPY --from=builder /src/config /config
 
 EXPOSE 8080/tcp
 VOLUME /data
+VOLUME /config
 
 CMD ["/teimeida"]

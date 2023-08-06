@@ -39,7 +39,7 @@ pub async fn share_handler(mut multipart: Multipart) -> impl IntoResponse {
 }
 
 pub async fn create_success_response(data: &ShareData) -> (axum::http::StatusCode, Html<String>) {
-    if let Ok(template) = read_to_string("assets/upload_done.tpl.html").await {
+    if let Ok(template) = read_to_string("templates/upload_done.tpl.html").await {
         let final_document = template
             .replace("%filename%", data.get_orig_name())
             .replace("%size%", data.get_size().to_string().as_str())

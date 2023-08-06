@@ -7,7 +7,7 @@ use axum::{
 use simple_logger::SimpleLogger;
 use tokio::{fs::File, spawn};
 use tokio_schedule::{every, Job};
-use tower_http::services::ServeFile;
+use tower_http::services::{ServeFile, ServeDir};
 use tower_http::validate_request::ValidateRequestHeaderLayer;
 
 #[macro_use]
@@ -32,7 +32,8 @@ async fn main() {
     spawn(cleaner);
 
     let index = ServeFile::new("assets/index.html");
-    let new_static = ServeFile::new("assets/new.html");
+    let assets = ServeDir::new("assets");
+    let new_static = ServeFile::new("templates/new.html");
 
     let app = Router::new()
         .route_service("/", index)
@@ -42,7 +43,8 @@ async fn main() {
             fileauth::FileAuth::new(&mut File::open("config/users.conf").await.unwrap()).await,
         ))
         //.route_layer(ValidateRequestHeaderLayer::basic("user", "secret"))
-        .route("/retrieve/:id", get(retrieve::retrieve_handler));
+        .route("/retrieve/:id", get(retrieve::retrieve_handler))
+        .route_service("/*path", assets);
 
     info!("Teimeida starting to serve on port 8080");
     Server::bind(&([0, 0, 0, 0], 8080).into())

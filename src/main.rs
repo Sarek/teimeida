@@ -7,7 +7,7 @@ use axum::{
 use simple_logger::SimpleLogger;
 use tokio::{fs::File, spawn};
 use tokio_schedule::{every, Job};
-use tower_http::services::{ServeFile, ServeDir};
+use tower_http::services::{ServeDir, ServeFile};
 use tower_http::validate_request::ValidateRequestHeaderLayer;
 
 #[macro_use]
@@ -15,6 +15,7 @@ extern crate log;
 
 mod cleanup;
 mod fileauth;
+mod overview;
 mod retrieve;
 mod share;
 
@@ -38,6 +39,7 @@ async fn main() {
     let app = Router::new()
         .route_service("/", index)
         .route("/new", get_service(new_static).post(share::share_handler))
+        .route("/overview", get(overview::overview_handler))
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024))
         .route_layer(ValidateRequestHeaderLayer::custom(
             fileauth::FileAuth::new(&mut File::open("config/users.conf").await.unwrap()).await,

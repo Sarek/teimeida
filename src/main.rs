@@ -44,7 +44,6 @@ async fn main() {
         .route_layer(ValidateRequestHeaderLayer::custom(
             fileauth::FileAuth::new(&mut File::open("config/users.conf").await.unwrap()).await,
         ))
-        //.route_layer(ValidateRequestHeaderLayer::basic("user", "secret"))
         .route("/retrieve/:id", get(retrieve::retrieve_handler))
         .route_service("/*path", assets);
 

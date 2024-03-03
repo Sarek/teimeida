@@ -2,7 +2,7 @@ use crate::cleanup::cleanup;
 use axum::{
     extract::DefaultBodyLimit,
     routing::{get, get_service},
-    Router, Server,
+    Router,
 };
 use simple_logger::SimpleLogger;
 use tokio::{fs::File, spawn};
@@ -48,8 +48,6 @@ async fn main() {
         .route_service("/*path", assets);
 
     info!("Teimeida starting to serve on port 8080");
-    Server::bind(&([0, 0, 0, 0], 8080).into())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }

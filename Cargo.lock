@@ -137,6 +137,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum-htpasswd"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dfbebdd6b94d88b9d27985038ce521bfd8eafa9700ba88ac88f8bbac3f5dec2b"
+dependencies = [
+ "axum",
+ "base64 0.21.7",
+ "http-body 1.0.0",
+ "log",
+ "tokio",
+ "tower-http",
+]
+
+[[package]]
 name = "backtrace"
 version = "0.3.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -1,7 +1,7 @@
 //use axum::extract::
 
 use axum::{
-    body::StreamBody,
+    body::Body,
     extract::Path,
     http::{header, HeaderMap, HeaderValue, StatusCode},
     response::IntoResponse,
@@ -27,7 +27,7 @@ pub async fn retrieve_handler(Path(id): Path<String>) -> impl IntoResponse {
     };
 
     let stream = ReaderStream::new(file);
-    let body = StreamBody::new(stream);
+    let body = Body::from_stream(stream);
 
     let mut headers = HeaderMap::new();
     headers.insert(

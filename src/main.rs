@@ -2,8 +2,9 @@ use crate::cleanup::cleanup;
 use axum::{
     extract::DefaultBodyLimit,
     routing::{get, get_service},
-    Router, Server,
+    Router,
 };
+use axum_htpasswd::{Encoding, FileAuth};
 use simple_logger::SimpleLogger;
 use tokio::{fs::File, spawn};
 use tokio_schedule::{every, Job};
@@ -14,7 +15,6 @@ use tower_http::validate_request::ValidateRequestHeaderLayer;
 extern crate log;
 
 mod cleanup;
-mod fileauth;
 mod overview;
 mod retrieve;
 mod share;
@@ -42,14 +42,12 @@ async fn main() {
         .route("/overview", get(overview::overview_handler))
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024))
         .route_layer(ValidateRequestHeaderLayer::custom(
-            fileauth::FileAuth::new(&mut File::open("config/users.conf").await.unwrap()).await,
+            FileAuth::new(&mut File::open("config/users.conf").await.unwrap(), Encoding::PlainText).await,
         ))
         .route("/retrieve/:id", get(retrieve::retrieve_handler))
         .route_service("/*path", assets);
 
     info!("Teimeida starting to serve on port 8080");
-    Server::bind(&([0, 0, 0, 0], 8080).into())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
